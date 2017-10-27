@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.skullabs.kikaha</groupId>
+		<version><!-- var-kikaha-version -->2.1.1.Final<!-- /var-kikaha-version --></version>
+		<artifactId>kikaha-project</artifactId>
+	</parent>
+
+	<groupId><!-- var-project-group-id -->io.skullabs.kikaha<!-- /var-project-group-id --></groupId>
+	<artifactId><!-- var-project-artifact-id -->kikaha-caffeine<!-- /var-project-artifact-id --></artifactId>
+	<version><!-- var-project-version -->0.1.0-SNAPSHOT<!-- /var-project-version --></version>
+	<packaging>jar</packaging>
+	<name>${project.artifactId}</name>
+
+	<properties>
+		<!-- project configurations -->
+		<config.dir.source>source</config.dir.source>
+		<config.dir.resource>resources</config.dir.resource>
+		<config.dir.test.source>tests</config.dir.test.source>
+		<config.dir.test.resource>tests-resources</config.dir.test.resource>
+		<config.dir.output>output</config.dir.output>
+		<config.dir.web>webapp</config.dir.web>
+		<!-- dependencies version configuration -->
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.skullabs.kikaha</groupId>
+			<artifactId>kikaha-injection</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>io.skullabs.kikaha</groupId>
+            <artifactId>kikaha-config</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>io.skullabs.kikaha</groupId>
+			<artifactId>kikaha-core</artifactId>
+            <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.5.6</version>
+        </dependency>
+	</dependencies>
+
+</project>
