@@ -16,14 +16,16 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * A producer of Caffeine caches.
  * Created by miere.teixeira on 27/10/2017.
  */
+@SuppressWarnings("unchecked")
 @Singleton @Slf4j
 public class CacheProducer {
 
-    final Map<String, Cache> caches = new HashMap<>();
-    final Map<String, LoadingCache> loadingCaches = new HashMap<>();
-    final Map<String, AsyncLoadingCache> asyncLoadingCaches = new HashMap<>();
+    private final Map<String, Cache> caches = new HashMap<>();
+    private final Map<String, LoadingCache> loadingCaches = new HashMap<>();
+    private final Map<String, AsyncLoadingCache> asyncLoadingCaches = new HashMap<>();
 
     @Inject CDI cdi;
     @Inject Config config;
@@ -87,7 +89,7 @@ public class CacheProducer {
     }
 
     private Cache buildCache(String name, Caffeine<Object, Object> builder) {
-        log.info( "Configuring cache: " + name );
+        log.info( "Configuring Caffeine cache: " + name );
         final CacheLoader cacheLoader = cdi.load( CacheLoader.class, l -> name.equals( getNameFrom(l) ) );
         if ( cacheLoader == null )
             log.warn( "  >> Cache would not have a CacheLoader. Ignoring." );
@@ -95,7 +97,7 @@ public class CacheProducer {
     }
 
     private LoadingCache buildLoadingCache(String name, Caffeine<Object, Object> builder) {
-        log.info( "Configuring cache: " + name );
+        log.info( "Configuring Caffeine cache: " + name );
         final CacheLoader cacheLoader = cdi.load( CacheLoader.class, l -> name.equals( getNameFrom(l) ) );
         if ( cacheLoader == null )
             throw new RuntimeException( "No CacheLoader defined for LoadingCache named " + name );
@@ -104,7 +106,7 @@ public class CacheProducer {
     }
 
     private AsyncLoadingCache buildAsyncLoadingCache(String name, Caffeine<Object, Object> builder) {
-        log.info( "Configuring cache: " + name );
+        log.info( "Configuring Caffeine cache: " + name );
         final AsyncCacheLoader cacheLoader = cdi.load( AsyncCacheLoader.class, l -> name.equals( getNameFrom(l) ) );
         if ( cacheLoader == null )
             throw new RuntimeException( "No CacheLoader defined for LoadingCache named " + name );
@@ -124,7 +126,7 @@ public class CacheProducer {
         return named.value();
     }
 
-    long getLong( String path ) {
+    private long getLong( String path ) {
         Object v = config.getObject( path );
         if ( v == null )
             return 0;
