@@ -1,11 +1,10 @@
 package kikaha.caffeine;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
-import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import javax.inject.*;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 @Singleton @Named("configured") @Slf4j
 public class ConfiguredCacheLoader implements CacheLoader<String, Integer> {

@@ -3,11 +3,10 @@ package kikaha.caffeine;
 import com.github.benmanes.caffeine.cache.CacheWriter;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 
-import lombok.*;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by miere.teixeira on 27/10/2017.
