@@ -1,7 +1,5 @@
 package kikaha.caffeine;
 
-import static org.junit.Assert.*;
-
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import kikaha.core.modules.security.DefaultSession;
@@ -14,6 +12,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit tests for {@link CaffeineSessionStoreTest}.

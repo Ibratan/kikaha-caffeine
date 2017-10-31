@@ -1,32 +1,52 @@
 package kikaha.caffeine;
 
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.undertow.server.HttpServerExchange;
-import kikaha.core.modules.security.DefaultSession;
 import kikaha.core.modules.security.Session;
 import kikaha.core.modules.security.SessionIdManager;
 import kikaha.core.modules.security.SessionStore;
-import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import javax.inject.*;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-@Singleton
+@Singleton @Slf4j
 public class CaffeineSessionStore implements SessionStore {
 
+    private final Lock lock = new ReentrantLock();
+
     @Inject @Named("session-cache")
-    Cache<String, Session> sessionCache;
+    LoadingCache<String, Session> sessionCache;
 
     @Override
     public Session createOrRetrieveSession( HttpServerExchange exchange, SessionIdManager sessionIdManager ) {
-        final String sessionId = sessionIdManager.retrieveSessionIdFrom( exchange );
-        return sessionCache.get( sessionId, s -> this.createAndStoreNewSession( s, exchange, sessionIdManager ));
+        final String sessionId = sessionIdManager.retrieveSessionIdFrom(exchange);
+
+        Session session = sessionCache.get( sessionId );
+        if ( session == null )
+            session = tryToCreateAndStoreNewSession(sessionId, exchange, sessionIdManager);
+
+        return session;
     }
 
     @Override
-    public Session createAndStoreNewSession(String sessionId, HttpServerExchange exchange, SessionIdManager sessionIdManager) {
-        final Session session = new DefaultSession( sessionId );
-        sessionIdManager.attachSessionId(exchange, session.getId());
+    public Session tryToCreateAndStoreNewSession(String sessionId, HttpServerExchange exchange, SessionIdManager sessionIdManager) {
+        Session session;
+
+        lock.lock();
+        try {
+            session = sessionCache.get(sessionId);
+            if ( session == null ) {
+                session = createAndStoreNewSession(sessionId, exchange, sessionIdManager);
+                System.out.println( Thread.currentThread().getName() + ": Session created: " + sessionId );
+            }
+        } finally {
+            lock.unlock();
+        }
+
         return session;
     }
 

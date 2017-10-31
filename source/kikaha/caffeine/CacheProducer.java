@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 /**
  * A producer of Caffeine caches.
  * Created by miere.teixeira on 27/10/2017.
@@ -22,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 @Singleton @Slf4j
 public class CacheProducer {
+
+    static final CacheLoader EMPTY_CACHE_LOADER = s -> null;
+    static final AsyncCacheLoader EMPTY_ASYNC_CACHE_LOADER = (key, executor) -> completedFuture(null);
 
     private final Map<String, Cache> caches = new HashMap<>();
     private final Map<String, LoadingCache> loadingCaches = new HashMap<>();
@@ -33,7 +38,7 @@ public class CacheProducer {
     @Produces Cache produceCache(ProviderContext context){
         final String name = getNameFrom( context );
         return caches.computeIfAbsent( name,
-                n -> buildCache( name, createNewCacheBuilder( name ) ));
+                n -> createNewCacheBuilder( name ).build() );
     }
 
     @Produces LoadingCache produceLoadingCache(ProviderContext context){
@@ -88,29 +93,25 @@ public class CacheProducer {
         }
     }
 
-    private Cache buildCache(String name, Caffeine<Object, Object> builder) {
-        log.info( "Configuring Caffeine cache: " + name );
-        final CacheLoader cacheLoader = cdi.load( CacheLoader.class, l -> name.equals( getNameFrom(l) ) );
-        if ( cacheLoader == null )
-            log.warn( "  >> Cache would not have a CacheLoader. Ignoring." );
-        return builder.build();
-    }
-
     private LoadingCache buildLoadingCache(String name, Caffeine<Object, Object> builder) {
         log.info( "Configuring Caffeine cache: " + name );
-        final CacheLoader cacheLoader = cdi.load( CacheLoader.class, l -> name.equals( getNameFrom(l) ) );
-        if ( cacheLoader == null )
-            throw new RuntimeException( "No CacheLoader defined for LoadingCache named " + name );
-        log.info( "  >>  configured with CacheLoader: " + cacheLoader );
+        CacheLoader cacheLoader = cdi.load( CacheLoader.class, l -> name.equals( getNameFrom(l) ) );
+        if ( cacheLoader == null ) {
+            log.warn( "  >> No CacheLoader defined for '"+name+"'. Ignoring...");
+            cacheLoader = EMPTY_CACHE_LOADER;
+        } else
+            log.info( "  >>  configured with CacheLoader: " + cacheLoader );
         return builder.build(cacheLoader);
     }
 
     private AsyncLoadingCache buildAsyncLoadingCache(String name, Caffeine<Object, Object> builder) {
         log.info( "Configuring Caffeine cache: " + name );
-        final AsyncCacheLoader cacheLoader = cdi.load( AsyncCacheLoader.class, l -> name.equals( getNameFrom(l) ) );
-        if ( cacheLoader == null )
-            throw new RuntimeException( "No CacheLoader defined for LoadingCache named " + name );
-        log.info( "  >>  configured with CacheLoader: " + cacheLoader );
+        AsyncCacheLoader cacheLoader = cdi.load( AsyncCacheLoader.class, l -> name.equals( getNameFrom(l) ) );
+        if ( cacheLoader == null ) {
+            log.warn( "  >> No CacheLoader defined for '"+name+"'. Ignoring...");
+            cacheLoader = EMPTY_ASYNC_CACHE_LOADER;
+        } else
+            log.info( "  >>  configured with CacheLoader: " + cacheLoader );
         return builder.buildAsync(cacheLoader);
     }
 
