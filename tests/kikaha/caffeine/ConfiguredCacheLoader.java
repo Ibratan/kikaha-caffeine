@@ -11,7 +11,7 @@ public class ConfiguredCacheLoader implements CacheLoader<String, Integer> {
 
     @Override
     public Integer load(String s) throws Exception {
-        log.warn( "Loading cached data for: " + s );
+        log.info( "Loading cached data for: " + s );
         return Integer.valueOf( s ) + 10;
     }
 }

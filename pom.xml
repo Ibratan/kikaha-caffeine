@@ -4,13 +4,13 @@
 
 	<parent>
 		<groupId>io.skullabs.kikaha</groupId>
-		<version><!-- var-kikaha-version -->2.1.1.Final<!-- /var-kikaha-version --></version>
+		<version><!-- var-kikaha-version -->2.1.2.Final<!-- /var-kikaha-version --></version>
 		<artifactId>kikaha-project</artifactId>
 	</parent>
 
 	<groupId><!-- var-project-group-id -->io.skullabs.kikaha<!-- /var-project-group-id --></groupId>
 	<artifactId><!-- var-project-artifact-id -->kikaha-caffeine<!-- /var-project-artifact-id --></artifactId>
-	<version><!-- var-project-version -->0.1.0<!-- /var-project-version --></version>
+	<version><!-- var-project-version -->0.2.0<!-- /var-project-version --></version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 

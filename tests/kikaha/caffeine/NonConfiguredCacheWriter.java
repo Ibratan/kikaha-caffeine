@@ -23,9 +23,6 @@ public class NonConfiguredCacheWriter implements CacheWriter<String, Integer> {
 
     @Override
     public void delete(String s, Integer integer, RemovalCause removalCause) {
-        if ( !removalCause.wasEvicted() ) {
-            System.out.println("Delete" + s);
-            data.remove(s);
-        }
+        if ( !removalCause.wasEvicted() ) data.remove(s);
     }
 }

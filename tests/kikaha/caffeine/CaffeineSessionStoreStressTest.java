@@ -42,7 +42,6 @@ public class CaffeineSessionStoreStressTest {
             try ( val bg = threads.background() ) {
                 for (int i = 0; i < 10; i++)
                     bg.run(() -> {
-                        System.out.println( "Running " + Thread.currentThread().getName() );
                         for (int j = 0; j < 100; j++)
                             sessionStore.createOrRetrieveSession(
                                     createExchange(j % 10), sessionIdManager);

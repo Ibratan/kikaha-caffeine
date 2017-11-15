@@ -2,4 +2,4 @@ server:
   cache:
     configured:
       maximum-size: 100
-      eviction: { time-after-write: 1 }
+      expiration: { time-after-write: 1 }
